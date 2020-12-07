@@ -1,7 +1,10 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import { QueryCache, ReactQueryCacheProvider } from "react-query";
-import { MainApp } from "./Containers/App/MainApp";
+
+function MainApp() {
+  return <div>WelCome to WebSocket</div>;
+}
 
 const queryCache = new QueryCache();
 
