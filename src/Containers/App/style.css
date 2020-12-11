@@ -1,0 +1,38 @@
+body{
+    margin:0;
+    padding: 0;
+}
+.main {
+    height: 100vh;
+    width: 100vw;
+    background-color: #eceff1
+  }
+  .cardContent{
+    width: 400px !important;
+    margin: 16px 14px 0px !important;
+    border-radius: 8px !important;
+  }
+.login{
+    display: flex;
+    justify-content: center;
+    vertical-align: center;
+}
+.title{
+    background-color: #ccc;
+    font-size: 25px;
+    width: 100%;
+}
+.title h1{
+    color: #3e3e3e;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+.bottom {
+    position: fixed;
+    width: 100%;
+    left: 0;
+    padding: 3px;
+    bottom: 0;
+  }
