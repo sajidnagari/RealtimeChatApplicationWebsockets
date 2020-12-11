@@ -23,6 +23,7 @@ export const MainApp = ({ client }) => {
           messages: [
             ...c.messages,
             {
+              id: Math.random(), // used for unique Id
               msg: dataFromServer.msg,
               user: dataFromServer.user,
             },
@@ -61,7 +62,7 @@ export const MainApp = ({ client }) => {
             {chatState.messages.map((message) => (
               <Card
                 className="cardContent"
-                key={message.msg}
+                key={message.id}
                 style={{
                   alignSelf:
                     chatState.username === message.user
