@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, Avatar, Input, Row, Col } from "antd";
 import "./style.css";
+import { Login } from "./../Login/login";
 
 const { Search } = Input;
 const { Meta } = Card;
@@ -44,6 +45,14 @@ export const MainApp = ({ client }) => {
     setSearchVal("");
   };
 
+  const handleSearch = (value) => {
+    setChatState({
+      ...chatState,
+      isloggedIn: true,
+      username: value,
+    });
+  };
+
   return (
     <div className="main">
       {chatState.isloggedIn ? (
@@ -73,9 +82,7 @@ export const MainApp = ({ client }) => {
               >
                 <Meta
                   avatar={
-                    <Avatar
-                      style={{ color: "#f56a00", backgroundColor: "#fde3cf" }}
-                    >
+                    <Avatar style={{ color: "gray", backgroundColor: "#ccc" }}>
                       {message.user[0].toUpperCase()}
                     </Avatar>
                   }
@@ -100,18 +107,7 @@ export const MainApp = ({ client }) => {
         <div style={{ padding: "400px 40px" }}>
           <Row>
             <Col span={12} offset={6}>
-              <Search
-                placeholder="Enter Username"
-                enterButton="Login"
-                size="large"
-                onSearch={(value) =>
-                  setChatState({
-                    ...chatState,
-                    isloggedIn: true,
-                    username: value,
-                  })
-                }
-              />
+              <Login handleSearch={handleSearch} />
             </Col>
           </Row>
         </div>
