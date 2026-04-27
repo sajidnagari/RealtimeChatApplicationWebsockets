@@ -12,6 +12,7 @@ const wsServer = new webSocketServer({
 });
 
 const clients = {};
+const allowedOrigins = new Set(["http://localhost:3000", "http://127.0.0.1:3000"]);
 
 // This code generates unique userid for everyuser.
 const getUniqueID = () => {
@@ -23,6 +24,11 @@ const getUniqueID = () => {
 };
 
 wsServer.on("request", function (request) {
+  if (!allowedOrigins.has(request.origin)) {
+    request.reject(403, "Origin not allowed");
+    return;
+  }
+
   var userID = getUniqueID();
   console.log(
     new Date() +
@@ -40,13 +46,38 @@ wsServer.on("request", function (request) {
 
   connection.on("message", function (message) {
     if (message.type === "utf8") {
-      console.log("Received Message: ", message.utf8Data);
+      let parsedMessage;
+      try {
+        parsedMessage = JSON.parse(message.utf8Data);
+      } catch (error) {
+        console.log("Invalid JSON message:", error);
+        return;
+      }
+
+      if (
+        parsedMessage.type !== "message" ||
+        typeof parsedMessage.msg !== "string" ||
+        typeof parsedMessage.user !== "string"
+      ) {
+        return;
+      }
+
+      const safeMessage = JSON.stringify({
+        type: "message",
+        msg: parsedMessage.msg,
+        user: parsedMessage.user,
+      });
 
       // broadcasting message to all connected clients
-      for (key in clients) {
-        clients[key].sendUTF(message.utf8Data);
-        console.log("sent Message to: ", clients[key]);
+      for (const key of Object.keys(clients)) {
+        clients[key].sendUTF(safeMessage);
+        console.log("sent Message to: ", key);
       }
     }
+  });
+
+  connection.on("close", function () {
+    delete clients[userID];
+    console.log("Disconnected:", userID);
   });
 });

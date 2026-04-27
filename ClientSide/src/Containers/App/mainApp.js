@@ -16,15 +16,25 @@ export const MainApp = ({ client }) => {
   const [searchVal, setSearchVal] = useState("");
 
   useEffect(() => {
+    if (!client) return;
+
     client.onmessage = (message) => {
-      const dataFromServer = JSON.parse(message.data);
+      let dataFromServer;
+      try {
+        dataFromServer = JSON.parse(message.data);
+      } catch (error) {
+        console.log("Invalid message payload:", error);
+        return;
+      }
+
       if (dataFromServer.type === "message") {
+        const id = `${Date.now()}-${Math.random()}`;
         setChatState((c) => ({
           ...c,
           messages: [
             ...c.messages,
             {
-              id: Math.random(), // used for unique Id
+              id,
               msg: dataFromServer.msg,
               user: dataFromServer.user,
             },
@@ -32,13 +42,20 @@ export const MainApp = ({ client }) => {
         }));
       }
     };
-  }, [chatState.messages, client.onmessage]);
+
+    return () => {
+      client.onmessage = null;
+    };
+  }, [client]);
 
   const onButtonClicked = (value) => {
+    const trimmedValue = value.trim();
+    if (!trimmedValue || !client || client.readyState !== client.OPEN) return;
+
     client.send(
       JSON.stringify({
         type: "message",
-        msg: value,
+        msg: trimmedValue,
         user: chatState.username,
       })
     );
@@ -46,10 +63,13 @@ export const MainApp = ({ client }) => {
   };
 
   const handleSearch = (value) => {
+    const trimmedValue = value.trim();
+    if (!trimmedValue) return;
+
     setChatState({
       ...chatState,
       isloggedIn: true,
-      username: value,
+      username: trimmedValue,
     });
   };
 
