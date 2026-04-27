@@ -12,7 +12,7 @@ Simple real-time chat application using a React client and a Node.js websocket s
 - Node.js 16+ recommended
 - npm or yarn
 
-## Install Dependencies
+## Install Dependenciess
 
 ### Client
 
